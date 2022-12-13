@@ -1,3 +1,4 @@
+import 'package:expense/widgets/home_chart.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:expense/widgets/home_expense_list.dart';
@@ -12,34 +13,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _expense = [
-    ExpenseDate(
-      id: 't1',
-      title: 'Tênis Olympikus',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    ExpenseDate(
-      id: 't2',
-      title: 'Conta de Luz',
-      value: 211.30,
-      date: DateTime.now(),
-    ),
-    ExpenseDate(
-      id: 't3',
-      title: 'Conta de Água',
-      value: 80.50,
-      date: DateTime.now(),
-    ),
-  ];
+  final List<ExpenseDate> _expense = [];
 
-  _addExpense(String title, double value) {
+  //passa as transações recente para o componente
+  List<ExpenseDate> get _recentTransactions{
+    return _expense.where((ex) {
+      return ex.date.isAfter(DateTime.now().subtract(
+        const Duration(days: 7),
+      ));
+    }).toList();
+  } 
+
+  _addExpense(String title, double value, DateTime date) {
     final newExpense = ExpenseDate(
       id: Random().nextDouble().toString(),
       //parametro da base atributo nomeado : parametro que recebeu no chamado da função
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -50,13 +41,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 
+  _deleteExpense(String id){
+    setState(() {
+      _expense.removeWhere((ex) => ex.id == id);
+    });
+  }
+
+  _editExpense(){}
+
   _openExpenseFormModal(BuildContext context) {
     showModalBottomSheet(
       context: context, 
       builder: (_){
-        return HomeExpenseForm(_addExpense);
+        return Container(
+          color: Colors.black54,
+          child: HomeExpenseForm(_addExpense)
+          );
       },
-      );
+    );
   }
 
   @override
@@ -74,10 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           // ignore: prefer_const_literals_to_create_immutables
           children: [
-            const SizedBox(
-              child: Card(elevation: 10, child: Text('Gráfico')),
-            ),
-            HomeExpenseList(_expense),
+            HomeChart(recentTransaction: _recentTransactions),
+            HomeExpenseList(_expense, _deleteExpense),
           ],
         ),
       ),

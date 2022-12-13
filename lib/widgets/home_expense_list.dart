@@ -3,81 +3,84 @@ import '../data_base/base_expense.dart';
 import 'package:intl/intl.dart';
 
 class HomeExpenseList extends StatelessWidget {
-  
-  
-
   final List<ExpenseDate> expense;
+  final void Function(String) onRemove;
 
-  const HomeExpenseList(this.expense, {super.key});
+  const HomeExpenseList(this.expense, this.onRemove, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
-      child: expense.isEmpty ? Column(
-        // ignore: prefer_const_literals_to_create_immutables
-        children: [
-          const Text(
-            'Nenhuma Transação Cadastrada',
-          ),
-          const SizedBox(height: 20),
-          Container(
-            width: 200,
-            child: Image.asset(
-              'assets\images\waiting.png',
-              fit: BoxFit.cover,
+      padding: const EdgeInsets.all(15),
+      height: 500,
+      child: expense.isEmpty 
+      ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // ignore: prefer_const_literals_to_create_immutables
+          children: [
+            const Text(
+              'Nenhuma Despesa Cadastrada',
             ),
-          ),
-        ],
+            const SizedBox(height: 20),//Espaço entre o texto e o container
+            SizedBox(
+              width: 150,
+              child: Image.asset(
+                'assets/images/waiting.png',
+                fit: BoxFit.cover, //Ajustar o tamanho da imagem dentro do container
+              ),
+            ),
+          ],
+        ),
       ) : ListView.builder(
         itemCount: expense.length,
         itemBuilder: (ctx, index){
           final ex = expense[index];
           return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 15, 
-                          vertical: 10,
-                          ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          )
-                        ),                      
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'R\$ ${ex.value.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 216, 9, 9),
-                          ),
-                          )),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            ex.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            ),
-                          Text(
-                            DateFormat('d MMM y').format(ex.date),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                            ),
-                        ],
+            elevation: 5,
+            margin: const EdgeInsets.all(5),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                radius: 30,
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: FittedBox(
+                    child: Text(
+                      'R\$${ex.value}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
+                    ),
                   ),
-                );
+                  ),
+              ),
+              title: Text(
+                ex.title,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              subtitle: Text(
+                DateFormat('d MMM y').format(ex.date),
+              ),
+              trailing: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () => onRemove(ex.id), 
+                    icon: const Icon(Icons.delete),
+                    color: Theme.of(context).errorColor,
+                    ),
+                  IconButton(
+                    onPressed: (){}, 
+                    icon: const Icon(Icons.edit),
+                    color: Colors.grey,
+                    ),
+                ],
+              ),
+            ),
+          );
         }
       ),
     );
