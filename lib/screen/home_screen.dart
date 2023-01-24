@@ -47,8 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  _editExpense(){}
-
+/*  _editExpense(String id){
+     if (int insertId == id)
+     setState(() {
+       _expense.insert(index, element)
+     });
+   }
+*/
   _openExpenseFormModal(BuildContext context) {
     showModalBottomSheet(
       context: context, 

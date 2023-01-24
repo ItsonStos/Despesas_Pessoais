@@ -25,7 +25,6 @@ class _HomeExpenseFormState extends State<HomeExpenseForm> {
     if(title.isEmpty || value <=0 || _selectedDate == null){
       return;
     }
-
     widget.onSubmit(title, value, _selectedDate!);
   }
 
@@ -62,7 +61,6 @@ class _HomeExpenseFormState extends State<HomeExpenseForm> {
           children: [
             TextField(
               controller: _titleController,
-              onSubmitted: (_) => _submitForm(),
               // ignore: prefer_const_constructors
               decoration: InputDecoration(
                 labelText: 'Título',
@@ -70,8 +68,7 @@ class _HomeExpenseFormState extends State<HomeExpenseForm> {
             ),
             TextField(
              controller: _valueController,
-             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-             onSubmitted: (_) => _submitForm(),
+             keyboardType: const TextInputType.numberWithOptions(decimal: true),             
               // ignore: prefer_const_constructors
               decoration: InputDecoration(
                 labelText: 'Valor (R\$)',
@@ -102,7 +99,7 @@ class _HomeExpenseFormState extends State<HomeExpenseForm> {
               ),
             ),
             TextButton(
-              onPressed: _submitForm, 
+              onPressed: _submitForm,
               // ignore: sort_child_properties_last
               child: const Text(
                 'Salvar Nova Transação',
